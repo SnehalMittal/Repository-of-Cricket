@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏏 Toss - AI Hand Cricket 🏏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #4CAF50, #2196F3);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            font-size: 18px;
+            padding: 12px 25px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        button:nth-child(1) {
+            background: #FFD700;
+            color: black;
+        }
+        button:nth-child(2) {
+            background: #FF4500;
+            color: white;
+        }
+        button:hover {
+            transform: scale(1.1);
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏏 Toss - AI Hand Cricket 🏏</h1>
+    <div class="container">
+        <h2>Choose Heads or Tails</h2>
+        <p>Flip the coin to decide who bats first! 🏏</p>
+        <button onclick="toss('Heads')">Heads</button>
+        <button onclick="toss('Tails')">Tails</button>
+        <p id="result"></p>
+    </div>
+    
+    <script>
+        function toss(playerChoice) {
+            let choices = ['Heads', 'Tails'];
+            let tossResult = choices[Math.floor(Math.random() * 2)];
+            let aiDecision = Math.random() < 0.5 ? 'bat' : 'ball';  // AI randomly chooses bat or ball if it wins
+
+            if (playerChoice === tossResult) {
+                document.getElementById("result").innerText = `🎉 You won the toss!`;
+                setTimeout(() => { window.location.href = 'batball.html'; }, 3000);
+            } else {
+                document.getElementById("result").innerText = `😈 AI won the toss and chose to ${aiDecision}!`;
+                setTimeout(() => { 
+                    localStorage.setItem("firstInnings", aiDecision); 
+                    window.location.href = 'choose.html'; 
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>

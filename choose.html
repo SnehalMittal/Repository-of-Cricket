@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Game Mode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #ff8c00, #ff0080);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none; /* Hidden initially */
+        }
+        button {
+            font-size: 18px;
+            padding: 12px 25px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .normal {
+            background: #00FF7F;
+            color: black;
+        }
+        .crazy {
+            background: #DC143C;
+            color: white;
+        }
+        button:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 Choose Your Game Mode 🎮</h1>
+    <div class="container">
+        <h2>Will you play Normal 🏏 or Crazy 🤪?</h2>
+        <button class="normal" onclick="startGame('home.html')">🏏 Normal Mode</button>
+        <button class="crazy" onclick="startGame('crazyhome.html')">🤪 Crazy Mode</button>
+    </div>
+    
+    <script>
+        function startGame(page) {
+            window.location.href = page;
+        }
+
+        // Show the options after 3 seconds
+        setTimeout(() => {
+            document.querySelector(".container").style.display = "block";
+        }, 3000);
+    </script>
+</body>
+</html>

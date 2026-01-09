@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hand Cricket - Crazy Mode</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #ff6a00, #ee0979);
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+}
+
+.scoreboard {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.player-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pfp {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    margin-bottom: 8px;
+}
+
+.divider {
+    width: 2px;
+    background: white;
+    height: 80px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button {
+    font-size: 18px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.image-display {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 20px;
+}
+
+.image-display img {
+    width: 100px;
+    height: 100px;
+}
+
+#out-message {
+    font-size: 40px;
+    font-weight: bold;
+    color: red;
+    display: none;
+}
+
+#win-message {
+    font-size: 40px;
+    font-weight: bold;
+    color: yellow;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+<h1 id="inning-heading">🏏 First Inning - Crazy Mode 🏏</h1>
+
+<div class="container">
+    <div class="scoreboard">
+        <div class="player-box">
+            <img id="playerPfp" class="pfp" src="teamslogo/default-player.jpg">
+            <h3 id="playerNameText"></h3>
+            <h2>Score: <span id="playerScore">0</span></h2>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="player-box">
+            <img id="aiPfp" class="pfp" src="teamslogo/default-ai.jpg">
+            <h3>AI</h3>
+            <h2>Score: <span id="aiScore">0</span></h2>
+        </div>
+    </div>
+
+    <h3 id="status"></h3>
+
+    <div class="image-display">
+        <img id="playerImage" src="images/1....jpg">
+        <img id="aiImage" src="images/1....jpg">
+    </div>
+
+    <div class="buttons" id="numberButtons"></div>
+
+    <p id="out-message">OUT!</p>
+    <p id="win-message"></p>
+</div>
+
+<script>
+/* ===== LOAD PROFILE DATA ===== */
+document.getElementById("playerNameText").innerText =
+    localStorage.getItem("playerName") || "Player";
+
+document.getElementById("playerPfp").src =
+    localStorage.getItem("playerPfp") || "teamslogo/default-player.jpg";
+
+document.getElementById("aiPfp").src =
+    localStorage.getItem("aiPfp") || "teamslogo/default-ai.jpg";
+
+/* ===== GAME LOGIC (UNCHANGED) ===== */
+let playerScore = 0;
+let aiScore = 0;
+let target = null;
+let playerBatting = true;
+let secondInning = false;
+
+let tossWinner = localStorage.getItem("tossWinner");
+let playerChoiceToss = localStorage.getItem("playerChoice");
+
+const buttonContainer = document.getElementById("numberButtons");
+const statusText = document.getElementById("status");
+const playerScoreText = document.getElementById("playerScore");
+const aiScoreText = document.getElementById("aiScore");
+const playerImage = document.getElementById("playerImage");
+const aiImage = document.getElementById("aiImage");
+const outMessage = document.getElementById("out-message");
+const winMessage = document.getElementById("win-message");
+const inningHeading = document.getElementById("inning-heading");
+
+if (tossWinner === "Player") {
+    playerBatting = (playerChoiceToss === "Bat");
+} else {
+    playerBatting = Math.random() < 0.5;
+}
+
+inningHeading.innerText = playerBatting
+    ? "🏏 First Inning - Player Batting 🏏"
+    : "🏏 First Inning - AI Batting 🏏";
+
+statusText.innerText = playerBatting
+    ? "Your turn to bat!"
+    : "Your turn to bowl!";
+
+for (let i = 1; i <= 10; i++) {
+    let button = document.createElement("button");
+    button.innerText = i;
+    button.onclick = () => playGame(i);
+    buttonContainer.appendChild(button);
+}
+
+function playGame(playerChoice) {
+    let aiChoice = Math.floor(Math.random() * 10) + 1;
+    playerImage.src = `images/${playerChoice}....jpg`;
+    aiImage.src = `images/${aiChoice}....jpg`;
+
+    if (playerBatting) {
+        if (aiChoice === playerChoice) {
+            outMessage.style.display = "block";
+            setTimeout(() => outMessage.style.display = "Out", 3000);
+            target = playerScore + 1;
+            playerBatting = false;
+            secondInning = true;
+            inningHeading.innerText = "🏏 Second Inning - AI Batting 🏏";
+            statusText.innerText = "Your turn to bowl!";
+        } else {
+            playerScore += playerChoice;
+            playerScoreText.innerText = playerScore;
+        }
+    } else {
+        if (playerChoice === aiChoice) {
+            if (aiScore < target) {
+                winMessage.innerText = "YOU WON!!!";
+            } else {
+                winMessage.innerText = "AI WON!!!";
+            }
+            winMessage.style.display = "block";
+            disableButtons();
+        } else {
+            aiScore += aiChoice;
+            aiScoreText.innerText = aiScore;
+        }
+    }
+}
+
+function disableButtons() {
+    document.querySelectorAll("button").forEach(b => b.disabled = true);
+}
+</script>
+</body>
+</html>

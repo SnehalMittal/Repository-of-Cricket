@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Bat or Ball</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #4CAF50, #2196F3);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+        }
+        button {
+            font-size: 20px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+        .bat { background-color: orange; }
+        .ball { background-color: blue; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>You won the toss! Choose to bat or ball:</h1>
+        <button class="bat" onclick="choose('bat')">Bat</button>
+        <button class="ball" onclick="choose('ball')">Ball</button>
+    </div>
+    
+    <script>
+        function choose(choice) {
+            localStorage.setItem("firstInning", choice);
+            window.location.href = "choose.html";
+        }
+    </script>
+</body>
+</html>

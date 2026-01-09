@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Cricket - Crazy Mode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #ff6a00, #ee0979);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+        }
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        .divider {
+            width: 2px;
+            background: white;
+            height: 70px;
+        }
+        .pfp {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .image-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            margin-top: 20px;
+        }
+        .image-display img {
+            width: 100px;
+            height: 100px;
+        }
+        #out-message {
+            font-size: 40px;
+            font-weight: bold;
+            color: red;
+            display: none;
+        }
+        #win-message {
+            font-size: 40px;
+            font-weight: bold;
+            color: yellow;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1 id="inning-heading">🏏 First Inning - Crazy Mode 🏏</h1>
+
+<div class="container">
+    <div class="scoreboard">
+        <div>
+            <img id="playerPfp" class="pfp" src="teamslogo/default-player.jpg">
+            <h3 id="playerNameDisplay">Player</h3>
+            <h2>Score: <span id="playerScore">0</span></h2>
+        </div>
+
+        <div class="divider"></div>
+
+        <div>
+            <img id="aiPfp" class="pfp" src="teamslogo/default-ai.jpg">
+            <h3>AI</h3>
+            <h2>Score: <span id="aiScore">0</span></h2>
+        </div>
+    </div>
+
+    <h3 id="status">Your turn to bat!</h3>
+
+    <div class="image-display">
+        <img id="playerImage" src="images/1....jpg" alt="Your Hand">
+        <img id="aiImage" src="images/1....jpg" alt="AI Hand">
+    </div>
+
+    <div class="buttons" id="numberButtons"></div>
+
+    <p id="out-message">OUT!</p>
+    <p id="win-message"></p>
+</div>
+
+<script>
+    let playerScore = 0;
+    let aiScore = 0;
+    let target = null;
+    let playerBatting = true;
+    let secondInning = false;
+
+    // 🔹 Load profile data
+    const storedName = localStorage.getItem("playerName");
+    const playerLogo = localStorage.getItem("playerLogo");
+    const aiLogo = localStorage.getItem("aiLogo");
+
+    if (storedName) document.getElementById("playerNameDisplay").innerText = storedName;
+    if (playerLogo) document.getElementById("playerPfp").src = "teamslogo/" + playerLogo;
+    if (aiLogo) document.getElementById("aiPfp").src = "teamslogo/" + aiLogo;
+
+    let tossWinner = localStorage.getItem("tossWinner");
+    let playerChoiceToss = localStorage.getItem("playerChoice");
+
+    const buttonContainer = document.getElementById("numberButtons");
+    const statusText = document.getElementById("status");
+    const playerScoreText = document.getElementById("playerScore");
+    const aiScoreText = document.getElementById("aiScore");
+    const playerImage = document.getElementById("playerImage");
+    const aiImage = document.getElementById("aiImage");
+    const outMessage = document.getElementById("out-message");
+    const winMessage = document.getElementById("win-message");
+    const inningHeading = document.getElementById("inning-heading");
+
+    if (tossWinner === "Player") {
+        playerBatting = (playerChoiceToss === "Bat");
+    } else {
+        playerBatting = Math.random() < 0.5;
+    }
+
+    inningHeading.innerText = playerBatting
+        ? "🏏 First Inning - Player Batting 🏏"
+        : "🏏 First Inning - AI Batting 🏏";
+
+    statusText.innerText = playerBatting ? "Your turn to bat!" : "Your turn to bowl!";
+
+    for (let i = 1; i <= 10; i++) {
+        let button = document.createElement("button");
+        button.innerText = i;
+        button.onclick = () => playGame(i);
+        buttonContainer.appendChild(button);
+    }
+
+    function playGame(playerChoice) {
+        let aiChoice = Math.floor(Math.random() * 10) + 1;
+
+        playerImage.src = `images/${playerChoice}....jpg`;
+        aiImage.src = `images/${aiChoice}....jpg`;
+
+        if (playerBatting) {
+            if (aiChoice === playerChoice) {
+                playerScore += playerChoice ** 2;
+            } else if (aiChoice === playerChoice - 1 || aiChoice === playerChoice + 1) {
+                out("Player");
+            } else {
+                playerScore += playerChoice;
+            }
+            playerScoreText.innerText = playerScore;
+        } else {
+            if (aiChoice === playerChoice) {
+                aiScore += aiChoice ** 2;
+            } else if (playerChoice === aiChoice - 1 || playerChoice === aiChoice + 1) {
+                out("AI");
+            } else {
+                aiScore += aiChoice;
+            }
+            aiScoreText.innerText = aiScore;
+
+            if (secondInning && aiScore >= target) endGame("AI WON!!!");
+        }
+    }
+
+    function out(who) {
+        outMessage.style.display = "block";
+        setTimeout(() => outMessage.style.display = "none", 2000);
+
+        if (who === "Player") {
+            target = playerScore + 1;
+            playerBatting = false;
+            secondInning = true;
+            inningHeading.innerText = "🏏 Second Inning - AI Batting 🏏";
+            statusText.innerText = "Your turn to bowl!";
+        } else {
+            if (!secondInning) {
+                target = aiScore + 1;
+                playerBatting = true;
+                secondInning = true;
+                inningHeading.innerText = "🏏 Second Inning - Player Batting 🏏";
+                statusText.innerText = "Your turn to bat!";
+            } else {
+                endGame(aiScore < target ? "YOU WON!!! 🎉" : "AI WON!!! 😈");
+            }
+        }
+    }
+
+    function endGame(msg) {
+        winMessage.innerText = msg;
+        winMessage.style.display = "block";
+        document.querySelectorAll("button").forEach(b => b.disabled = true);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏏 Profile Setup</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: rgba(0,0,0,0.75);
+    padding: 25px;
+    border-radius: 15px;
+    width: 380px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 15px;
+}
+
+input {
+    width: 90%;
+    padding: 8px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.select-row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.box {
+    text-align: center;
+}
+
+.box img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid white;
+    object-fit: cover;
+    margin-bottom: 6px;
+}
+
+select {
+    padding: 5px;
+}
+
+button {
+    font-size: 18px;
+    padding: 10px 25px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>👤 Player Profile</h1>
+
+<input type="text" id="playerName" placeholder="Enter your name">
+
+<div class="select-row">
+    <div class="box">
+        <img id="playerPreview" src="teamslogo/csk.jfif">
+        <select id="playerLogo">
+            <option value="csk.jfif">CSK</option>
+            <option value="mi.jfif">MI</option>
+            <option value="kkr.jfif">KKR</option>
+            <option value="rcb.jfif">RCB</option>
+            <option value="dc.jfif">DC</option>
+            <option value="rr.jfif">RR</option>
+            <option value="srh.jfif">SRH</option>
+            <option value="pbks.jfif">PBKS</option>
+            <option value="lsg.jfif">LSG</option>
+            <option value="gt.jfif">GT</option> 
+        </select>
+        <p>You</p>
+    </div>
+
+    <div class="box">
+        <img id="aiPreview" src="teamslogo/csk.jfif">
+        <select id="aiLogo">
+            <option value="csk.jfif">CSK</option>
+            <option value="mi.jfif">MI</option>
+            <option value="kkr.jfif">KKR</option>
+            <option value="rcb.jfif">RCB</option>
+            <option value="dc.jfif">DC</option>
+            <option value="rr.jfif">RR</option>
+            <option value="srh.jfif">SRH</option>
+            <option value="pbks.jfif">PBKS</option>
+            <option value="lsg.jfif">LSG</option>
+            <option value="gt.jfif">GT</option> 
+        </select>
+        <p>AI</p>
+    </div>
+</div>
+
+<button onclick="saveProfile()">Save & Continue ➜</button>
+
+</div>
+
+<script>
+const playerLogo = document.getElementById("playerLogo");
+const aiLogo = document.getElementById("aiLogo");
+
+playerLogo.onchange = () => {
+    document.getElementById("playerPreview").src =
+        "teamslogo/" + playerLogo.value;
+};
+
+aiLogo.onchange = () => {
+    document.getElementById("aiPreview").src =
+        "teamslogo/" + aiLogo.value;
+};
+
+function saveProfile() {
+    const name = document.getElementById("playerName").value.trim();
+
+    if (name === "") {
+        alert("Please enter your name");
+        return;
+    }
+
+    localStorage.setItem("playerName", name);
+    localStorage.setItem("playerLogo", playerLogo.value);
+    localStorage.setItem("aiLogo", aiLogo.value);
+
+    window.location.href = "toss.html";
+}
+</script>
+
+</body>
+</html>
